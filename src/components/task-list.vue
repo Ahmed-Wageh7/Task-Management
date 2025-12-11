@@ -623,4 +623,17 @@ const loadData = async () => {
   opacity: 1;
   transform: scale(1);
 }
+.loader-border {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #fff3;
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
 </style>

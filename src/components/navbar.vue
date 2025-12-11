@@ -10,98 +10,100 @@
       + Add Task
     </button>
 
-    <div
-      v-if="openAddModal"
-      class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
-      @click.self="closeModal"
-    >
+    <Transition name="modal-fade">
       <div
-        class="bg-white p-6 rounded-lg w-full max-w-md relative"
-        @keydown.esc="closeModal"
+        v-if="openAddModal"
+        class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
+        @click.self="closeModal"
       >
-        <h2 class="text-lg font-bold mb-4">Add New Task</h2>
+        <div
+          class="bg-white p-6 rounded-lg w-full max-w-md relative"
+          @keydown.esc="closeModal"
+        >
+          <h2 class="text-lg font-bold mb-4">Add New Task</h2>
 
-        <p v-if="successMsg" class="text-green-600 mb-2">{{ successMsg }}</p>
-        <p v-if="errorMsg" class="text-red-600 mb-2">{{ errorMsg }}</p>
+          <p v-if="successMsg" class="text-green-600 mb-2">{{ successMsg }}</p>
+          <p v-if="errorMsg" class="text-red-600 mb-2">{{ errorMsg }}</p>
 
-        <form @submit.prevent="submitTask">
-          <input
-            v-model="newTask.title"
-            type="text"
-            placeholder="Title"
-            class="w-full mb-3 p-2 border rounded"
-            :class="{ 'border-red-500': validationErrors.title }"
-            required
-          />
-          <p v-if="validationErrors.title" class="text-red-500 text-sm mb-2">
-            {{ validationErrors.title }}
-          </p>
+          <form @submit.prevent="submitTask">
+            <input
+              v-model="newTask.title"
+              type="text"
+              placeholder="Title"
+              class="w-full mb-3 p-2 border rounded"
+              :class="{ 'border-red-500': validationErrors.title }"
+              required
+            />
+            <p v-if="validationErrors.title" class="text-red-500 text-sm mb-2">
+              {{ validationErrors.title }}
+            </p>
 
-          <select
-            v-model="newTask.category_id"
-            class="w-full mb-3 p-2 border rounded"
-            :class="{ 'border-red-500': validationErrors.category_id }"
-            required
-          >
-            <option value="" disabled>Select Category</option>
-            <option
-              v-for="cat in tasksStore.categories"
-              :key="cat.id"
-              :value="cat.id"
+            <select
+              v-model="newTask.category_id"
+              class="w-full mb-3 p-2 border rounded"
+              :class="{ 'border-red-500': validationErrors.category_id }"
+              required
             >
-              {{ cat.name }}
-            </option>
-          </select>
-          <p
-            v-if="validationErrors.category_id"
-            class="text-red-500 text-sm mb-2"
-          >
-            {{ validationErrors.category_id }}
-          </p>
-
-          <textarea
-            v-model="newTask.description"
-            placeholder="Description"
-            class="w-full mb-3 p-2 border rounded"
-          ></textarea>
-
-          <select
-            v-model="newTask.priority"
-            class="w-full mb-3 p-2 border rounded"
-          >
-            <option value="">Select Priority</option>
-            <option value="low">Low</option>
-            <option value="medium">Medium</option>
-            <option value="high">High</option>
-          </select>
-
-          <input
-            v-model="newTask.due_date"
-            type="date"
-            class="w-full mb-3 p-2 border rounded"
-          />
-
-          <div class="flex justify-end gap-2">
-            <button
-              type="button"
-              @click="closeModal"
-              class="px-3 py-2 bg-gray-300 hover:bg-gray-400 rounded transition-all"
-              :disabled="loading"
+              <option value="" disabled>Select Category</option>
+              <option
+                v-for="cat in tasksStore.categories"
+                :key="cat.id"
+                :value="cat.id"
+              >
+                {{ cat.name }}
+              </option>
+            </select>
+            <p
+              v-if="validationErrors.category_id"
+              class="text-red-500 text-sm mb-2"
             >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              class="px-3 py-2 bg-green-600 hover:bg-green-700 text-white rounded flex items-center gap-2 transition"
-              :disabled="loading"
+              {{ validationErrors.category_id }}
+            </p>
+
+            <textarea
+              v-model="newTask.description"
+              placeholder="Description"
+              class="w-full mb-3 p-2 border rounded"
+            ></textarea>
+
+            <select
+              v-model="newTask.priority"
+              class="w-full mb-3 p-2 border rounded"
             >
-              <span v-if="loading" class="loader-border"></span>
-              Save
-            </button>
-          </div>
-        </form>
+              <option value="">Select Priority</option>
+              <option value="low">Low</option>
+              <option value="medium">Medium</option>
+              <option value="high">High</option>
+            </select>
+
+            <input
+              v-model="newTask.due_date"
+              type="date"
+              class="w-full mb-3 p-2 border rounded"
+            />
+
+            <div class="flex justify-end gap-2">
+              <button
+                type="button"
+                @click="closeModal"
+                class="px-3 py-2 bg-gray-300 hover:bg-gray-400 rounded transition-all"
+                :disabled="loading"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                class="px-3 py-2 bg-green-600 hover:bg-green-700 text-white rounded flex items-center gap-2 transition"
+                :disabled="loading"
+              >
+                <span v-if="loading" class="loader-border"></span>
+                Save
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
-    </div>
+    </Transition>
   </nav>
 </template>
 
@@ -217,6 +219,20 @@ async function submitTask() {
 </script>
 
 <style scoped>
+.modal-fade-enter-active,
+.modal-fade-leave-active {
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.modal-fade-enter-from,
+.modal-fade-leave-to {
+  opacity: 0;
+  transform: translateY(-20px) scale(0.95);
+}
+.modal-fade-enter-to,
+.modal-fade-leave-from {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
 .loader-border {
   width: 16px;
   height: 16px;
