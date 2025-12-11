@@ -264,146 +264,150 @@
     </Transition>
 
     <!-- Edit Modal -->
-    <div
-      v-if="editModalOpen"
-      class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4"
-      @click.self="closeEditModal"
-    >
+    <transition name=" modal-fade" appear>
       <div
-        class="bg-white p-6 md:p-8 rounded-2xl w-full max-w-lg shadow-2xl border border-gray-200 max-h-[90vh] overflow-y-auto"
+        v-if="editModalOpen"
+        class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4"
+        @click.self="closeEditModal"
       >
-        <h2 class="text-xl md:text-2xl font-bold mb-6 text-gray-900">
-          Edit Task
-        </h2>
-        <form @submit.prevent="submitEditTask" class="space-y-4">
-          <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-2"
-              >Title</label
-            >
-            <input
-              v-model="editTask.title"
-              type="text"
-              class="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              placeholder="Task title"
-              required
-            />
-          </div>
-
-          <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-2"
-              >Category</label
-            >
-            <select
-              v-model="editTask.category_id"
-              class="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              required
-            >
-              <option value="" disabled>Select Category</option>
-              <option v-for="cat in categories" :key="cat.id" :value="cat.id">
-                {{ cat.name }}
-              </option>
-            </select>
-          </div>
-
-          <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-2"
-              >Description</label
-            >
-            <textarea
-              v-model="editTask.description"
-              class="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical"
-              rows="3"
-              placeholder="Description (optional)"
-            ></textarea>
-          </div>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div
+          class="bg-white p-6 md:p-8 rounded-2xl w-full max-w-lg shadow-2xl border border-gray-200 max-h-[90vh] overflow-y-auto"
+        >
+          <h2 class="text-xl md:text-2xl font-bold mb-6 text-gray-900">
+            Edit Task
+          </h2>
+          <form @submit.prevent="submitEditTask" class="space-y-4">
             <div>
               <label class="block text-sm font-semibold text-gray-700 mb-2"
-                >Priority</label
-              >
-              <select
-                v-model="editTask.priority"
-                class="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              >
-                <option value="">No priority</option>
-                <option value="low">Low</option>
-                <option value="medium">Medium</option>
-                <option value="high">High</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-sm font-semibold text-gray-700 mb-2"
-                >Due Date</label
+                >Title</label
               >
               <input
-                v-model="editTask.due_date"
-                type="date"
+                v-model="editTask.title"
+                type="text"
                 class="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                placeholder="Task title"
+                required
               />
             </div>
-          </div>
 
-          <div
-            class="flex justify-end gap-3 pt-4 border-t border-gray-200 mt-6"
-          >
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-2"
+                >Category</label
+              >
+              <select
+                v-model="editTask.category_id"
+                class="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                required
+              >
+                <option value="" disabled>Select Category</option>
+                <option v-for="cat in categories" :key="cat.id" :value="cat.id">
+                  {{ cat.name }}
+                </option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-2"
+                >Description</label
+              >
+              <textarea
+                v-model="editTask.description"
+                class="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-vertical"
+                rows="3"
+                placeholder="Description (optional)"
+              ></textarea>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2"
+                  >Priority</label
+                >
+                <select
+                  v-model="editTask.priority"
+                  class="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                >
+                  <option value="">No priority</option>
+                  <option value="low">Low</option>
+                  <option value="medium">Medium</option>
+                  <option value="high">High</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2"
+                  >Due Date</label
+                >
+                <input
+                  v-model="editTask.due_date"
+                  type="date"
+                  class="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+            </div>
+
+            <div
+              class="flex justify-end gap-3 pt-4 border-t border-gray-200 mt-6"
+            >
+              <button
+                type="button"
+                @click="closeEditModal"
+                class="px-6 py-2.5 border border-gray-300 rounded-xl hover:bg-gray-50 transition font-medium"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                class="px-8 py-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition font-semibold shadow-md"
+              >
+                Save Changes
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </transition>
+
+    <!-- Delete Modal -->
+    <transition name=" modal-fade" appear>
+      <div
+        v-if="deleteId !== null"
+        class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4"
+        @click.self="deleteId = null"
+      >
+        <div
+          class="bg-white p-6 md:p-8 rounded-2xl w-full max-w-sm shadow-2xl border border-gray-200"
+        >
+          <div class="text-center mb-6">
+            <div
+              class="w-14 h-14 md:w-16 md:h-16 bg-red-100 rounded-2xl mx-auto flex items-center justify-center mb-4"
+            >
+              <span class="text-xl md:text-2xl">🗑️</span>
+            </div>
+            <h2 class="text-lg md:text-xl font-bold text-gray-900 mb-2">
+              Confirm Delete
+            </h2>
+            <p class="text-gray-600 text-sm md:text-base">
+              Are you sure you want to delete this task? This action cannot be
+              undone.
+            </p>
+          </div>
+          <div class="flex gap-3 justify-end">
             <button
-              type="button"
-              @click="closeEditModal"
-              class="px-6 py-2.5 border border-gray-300 rounded-xl hover:bg-gray-50 transition font-medium"
+              @click="deleteId = null"
+              class="flex-1 px-4 md:px-6 py-2.5 border border-gray-300 rounded-xl hover:bg-gray-50 transition font-medium"
             >
               Cancel
             </button>
             <button
-              type="submit"
-              class="px-8 py-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition font-semibold shadow-md"
+              @click="handleDelete"
+              class="flex-1 px-4 md:px-6 py-2.5 bg-red-500 text-white rounded-xl hover:bg-red-600 transition font-semibold shadow-md"
             >
-              Save Changes
+              Delete Task
             </button>
           </div>
-        </form>
-      </div>
-    </div>
-
-    <!-- Delete Modal -->
-    <div
-      v-if="deleteId !== null"
-      class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4"
-      @click.self="deleteId = null"
-    >
-      <div
-        class="bg-white p-6 md:p-8 rounded-2xl w-full max-w-sm shadow-2xl border border-gray-200"
-      >
-        <div class="text-center mb-6">
-          <div
-            class="w-14 h-14 md:w-16 md:h-16 bg-red-100 rounded-2xl mx-auto flex items-center justify-center mb-4"
-          >
-            <span class="text-xl md:text-2xl">🗑️</span>
-          </div>
-          <h2 class="text-lg md:text-xl font-bold text-gray-900 mb-2">
-            Confirm Delete
-          </h2>
-          <p class="text-gray-600 text-sm md:text-base">
-            Are you sure you want to delete this task? This action cannot be
-            undone.
-          </p>
-        </div>
-        <div class="flex gap-3 justify-end">
-          <button
-            @click="deleteId = null"
-            class="flex-1 px-4 md:px-6 py-2.5 border border-gray-300 rounded-xl hover:bg-gray-50 transition font-medium"
-          >
-            Cancel
-          </button>
-          <button
-            @click="handleDelete"
-            class="flex-1 px-4 md:px-6 py-2.5 bg-red-500 text-white rounded-xl hover:bg-red-600 transition font-semibold shadow-md"
-          >
-            Delete Task
-          </button>
         </div>
       </div>
-    </div>
+    </transition>
   </main>
 </template>
 
@@ -602,11 +606,21 @@ const loadData = async () => {
 .task-card:hover {
   transform: translateY(-1px);
 }
+.modal-fade-enter-active,
+.modal-fade-leave-active {
+  transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
 
-/* منع السكرول الأفقي */
-@supports (overflow-x: clip) {
-  .task-card {
-    overflow-x: clip;
-  }
+.modal-fade-enter-from,
+.modal-fade-leave-to {
+  opacity: 0;
+  transform: scale(0.96);
+}
+
+.modal-fade-enter-to,
+.modal-fade-leave-from {
+  opacity: 1;
+  transform: scale(1);
 }
 </style>

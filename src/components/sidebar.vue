@@ -175,6 +175,7 @@
   </aside>
 
   <!-- ========== TABLET ========== -->
+
   <aside
     v-else-if="isTablet"
     class="bg-white shadow h-full p-3 flex flex-col border-r border-gray-200 w-20"
@@ -487,6 +488,7 @@ library.add(
   faTags,
   faEllipsisV
 );
+const sidebarOpen = ref(false);
 
 /* -------------------------------------------------
    reactive screen size
