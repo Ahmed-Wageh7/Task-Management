@@ -366,7 +366,7 @@
         @click="mobileDrawer = false"
       >
         <div
-          class="w-[95vw] h-[95vh] bg-white rounded-2xl m-2 p-4 shadow-2xl flex flex-col"
+          class="w-full h-[95vh] bg-white rounded-2xl p-4 shadow-2xl flex flex-col"
           @click.stop
         >
           <!-- Header -->
@@ -533,6 +533,7 @@ function openMobileDrawer() {
 -------------------------------------------------- */
 function setFilter(type, id = null) {
   filter.value = { type, id };
+  tasksStore.selectedTask = null;
 }
 
 /* -------------------------------------------------

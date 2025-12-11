@@ -1,257 +1,267 @@
 <template>
-  <main class="flex-1 bg-gray-50 min-h-screen p-2 md:p-4 md:pt-0 pt-20">
-    <div v-if="!selectedTask" class="">
-      <h1 class="text-xl md:text-2xl font-bold mb-3 md:mb-4">Tasks</h1>
+  <main
+    class="flex-1 bg-gray-50 min-h-screen p-2 md:p-4 md:pt-0 pt-20 max-[500px]:px-0"
+  >
+    <Transition name="fade" mode="out-in">
+      <div v-if="!selectedTask" :key="filterKey" class="">
+        <h1 class="text-xl md:text-2xl font-bold mb-3 md:mb-4">Tasks</h1>
 
-      <!-- Tasks Container -->
-      <div
-        class="bg-white rounded-lg shadow-md p-3 md:p-6 border border-gray-200 h-[calc(100vh-160px)] md:h-[calc(100vh-200px)] flex flex-col max-[500px]:h-[680px] max-[500px]:p-2 max-[500px]:min-h-[680px]"
-      >
-        <!-- Header -->
+        <!-- Tasks Container -->
         <div
-          class="p-2 md:p-4 border-b border-gray-100 mb-3 md:mb-4 flex items-center justify-between"
+          class="bg-white rounded-lg shadow-md p-3 md:p-6 border border-gray-200 h-[calc(100vh-160px)] md:h-[calc(100vh-200px)] flex flex-col max-[500px]:h-[680px] max-[500px]:pl-2 max-[500px]:pr-0 max-[500px]:min-h-[680px]"
         >
-          <span class="text-base md:text-lg font-semibold text-gray-800">
-            {{ filteredTasks?.length || 0 }} Tasks
-          </span>
-        </div>
-
-        <!-- Tasks Content -->
-        <div
-          class="flex-1 overflow-y-auto p-2 md:p-4 space-y-2 md:space-y-3 custom-scrollbar"
-        >
-          <!-- Loading -->
-          <div v-if="loading" class="text-center py-16 md:py-20 text-gray-500">
-            <div
-              class="w-10 h-10 md:w-12 md:h-12 border-4 border-gray-200 border-t-blue-500 rounded-full animate-spin mx-auto mb-3 md:mb-4"
-            ></div>
-            Loading tasks...
-          </div>
-
-          <!-- Error -->
+          <!-- Header -->
           <div
-            v-else-if="error"
-            class="text-center py-16 md:py-20 text-red-500"
+            class="p-2 md:p-4 border-b border-gray-100 mb-3 md:mb-4 flex items-center justify-between"
           >
-            {{ error }}
-            <button
-              @click="loadData"
-              class="ml-2 text-blue-500 underline hover:text-blue-700 text-sm"
-            >
-              Retry
-            </button>
+            <span class="text-base md:text-lg font-semibold text-gray-800">
+              {{ filteredTasks?.length || 0 }} Tasks
+            </span>
           </div>
 
-          <!-- Empty -->
+          <!-- Tasks Content -->
           <div
-            v-else-if="!filteredTasks?.length"
-            class="text-center py-16 md:py-20 text-gray-500"
+            class="flex-1 overflow-y-auto p-2 md:p-4 space-y-2 md:space-y-3 custom-scrollbar"
           >
-            <!-- No tasks found. -->
-          </div>
-
-          <!-- Tasks List -->
-          <div v-else class="space-y-2 md:space-y-3">
+            <!-- Loading -->
             <div
-              v-for="task in filteredTasks"
-              :key="task.id"
-              class="p-3 md:p-6 bg-gray-50/80 hover:bg-white rounded-xl shadow-sm flex flex-col md:flex-row md:justify-between cursor-pointer hover:shadow-md transition-all duration-200 border border-gray-100 hover:border-gray-200 task-card w-full"
-              :style="{
-                borderLeft: '6px solid ' + getCategoryColor(task.category_id),
-              }"
-              @click="openTaskDetail(task)"
+              v-if="loading"
+              class="text-center py-16 md:py-20 text-gray-500"
             >
-              <div class="flex-1 w-full md:min-w-0 mb-2 md:mb-0">
-                <h2
-                  class="font-bold text-base md:text-lg mb-2 leading-tight truncate"
-                >
-                  {{ task.title }}
-                </h2>
-                <p
-                  class="text-xs md:text-sm text-gray-600 mb-2 md:mb-3 line-clamp-2"
-                >
-                  {{ task.description || "No description" }}
-                </p>
-                <!-- Tags - عمودي على الموبايل، أفقي على الديسكتوب -->
-                <div
-                  class="flex flex-col sm:flex-row flex-wrap items-start sm:items-center gap-1 md:gap-3 text-xs"
-                >
-                  <span
-                    class="px-2 py-1 bg-blue-100 text-blue-800 rounded-full font-medium"
+              <div
+                class="w-10 h-10 md:w-12 md:h-12 border-4 border-gray-200 border-t-blue-500 rounded-full animate-spin mx-auto mb-3 md:mb-4"
+              ></div>
+              Loading tasks...
+            </div>
+
+            <!-- Error -->
+            <div
+              v-else-if="error"
+              class="text-center py-16 md:py-20 text-red-500"
+            >
+              {{ error }}
+              <button
+                @click="loadData"
+                class="ml-2 text-blue-500 underline hover:text-blue-700 text-sm"
+              >
+                Retry
+              </button>
+            </div>
+
+            <!-- Empty -->
+            <div
+              v-else-if="!filteredTasks?.length"
+              class="text-center py-16 md:py-20 text-gray-500"
+            >
+              <!-- No tasks found. -->
+            </div>
+
+            <!-- Tasks List -->
+            <div v-else class="space-y-2 md:space-y-3">
+              <div
+                v-for="task in filteredTasks"
+                :key="task.id"
+                class="p-3 md:p-6 bg-gray-50/80 hover:bg-white rounded-xl shadow-sm flex flex-col md:flex-row md:justify-between cursor-pointer hover:shadow-md transition-all duration-200 border border-gray-100 hover:border-gray-200 task-card w-full"
+                :style="{
+                  borderLeft: '6px solid ' + getCategoryColor(task.category_id),
+                }"
+                @click="openTaskDetail(task)"
+              >
+                <div class="flex-1 w-full md:min-w-0 mb-2 md:mb-0">
+                  <h2
+                    class="font-bold text-base md:text-lg mb-2 leading-tight truncate"
                   >
-                    {{ getCategoryName(task.category_id) || "N/A" }}
-                  </span>
-                  <span
-                    class="px-2 py-1 bg-gray-100 text-gray-800 rounded-full"
+                    {{ task.title }}
+                  </h2>
+                  <p
+                    class="text-xs md:text-sm text-gray-600 mb-2 md:mb-3 line-clamp-2"
                   >
-                    {{
-                      task.priority
-                        ? task.priority.toUpperCase()
-                        : "NO PRIORITY"
-                    }}
-                  </span>
-                  <span
-                    :class="task.completed ? 'text-green-600' : 'text-gray-500'"
+                    {{ task.description || "No description" }}
+                  </p>
+                  <!-- Tags - عمودي على الموبايل، أفقي على الديسكتوب -->
+                  <div
+                    class="flex flex-col sm:flex-row flex-wrap items-start sm:items-center gap-1 md:gap-3 text-xs"
                   >
-                    {{ task.completed ? "✅ Completed" : "⏳ Pending" }}
-                  </span>
-                  <span v-if="task.due_date" class="text-blue-600">
-                    📅 {{ formatDate(task.due_date) }}
-                  </span>
+                    <span
+                      class="px-2 py-1 bg-blue-100 text-blue-800 rounded-full font-medium"
+                    >
+                      {{ getCategoryName(task.category_id) || "N/A" }}
+                    </span>
+                    <span
+                      class="px-2 py-1 bg-gray-100 text-gray-800 rounded-full"
+                    >
+                      {{
+                        task.priority
+                          ? task.priority.toUpperCase()
+                          : "NO PRIORITY"
+                      }}
+                    </span>
+                    <span
+                      :class="
+                        task.completed ? 'text-green-600' : 'text-gray-500'
+                      "
+                    >
+                      {{ task.completed ? "✅ Completed" : "⏳ Pending" }}
+                    </span>
+                    <span v-if="task.due_date" class="text-blue-600">
+                      📅 {{ formatDate(task.due_date) }}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- Task Detail View -->
-    <div
-      v-else
-      class="bg-white rounded-xl shadow-lg w-full max-w-md md:max-w-3xl mx-auto p-3 md:p-6 border border-gray-200 h-[calc(100vh-120px)] md:h-[calc(100vh-150px)] flex flex-col overflow-hidden"
-    >
+      <!-- Task Detail View -->
       <div
-        class="flex justify-between items-center mb-3 md:mb-4 pb-2 md:pb-3 border-b border-gray-100 flex-shrink-0"
+        v-else
+        class="bg-white rounded-xl shadow-lg w-full max-w-md md:max-w-3xl mx-auto p-3 md:p-6 border border-gray-200 h-[calc(100vh-120px)] md:h-[calc(100vh-150px)] flex flex-col overflow-hidden"
       >
-        <button
-          @click="selectedTask = null"
-          class="px-2 md:px-3 py-1.5 bg-gray-200 text-xs md:text-sm rounded hover:bg-gray-300 transition flex items-center gap-1"
-        >
-          ← Back
-        </button>
-        <div class="flex gap-1">
-          <button
-            @click="openEditModal(selectedTask)"
-            class="px-2 md:px-3 py-1.5 bg-blue-500 text-white text-xs rounded hover:bg-blue-600 transition flex items-center gap-1"
-          >
-            ✏️ Edit
-          </button>
-          <button
-            @click="confirmDelete(selectedTask.id)"
-            class="px-2 md:px-3 py-1.5 bg-red-500 text-white text-xs rounded hover:bg-red-600 transition flex items-center gap-1"
-          >
-            🗑️ Delete
-          </button>
-        </div>
-      </div>
-
-      <!-- Content -->
-      <div class="flex-1 p-2 md:p-3 space-y-2 md:space-y-3 overflow-y-auto">
-        <div class="flex-shrink-0">
-          <h2
-            class="text-xl md:text-2xl font-black text-gray-900 mb-1 truncate"
-          >
-            {{ selectedTask.title }}
-          </h2>
-          <div class="flex flex-wrap items-center gap-1 md:gap-2 mb-2">
-            <span
-              class="px-2 md:px-3 py-1 bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800 rounded-full text-xs font-bold"
-            >
-              {{ getCategoryName(selectedTask.category_id) || "N/A" }}
-            </span>
-            <span
-              v-if="selectedTask.priority"
-              class="px-2 py-1 text-xs font-bold rounded-full"
-              :class="{
-                'bg-red-100 text-red-800': selectedTask.priority === 'high',
-                'bg-yellow-100 text-yellow-800':
-                  selectedTask.priority === 'medium',
-                'bg-green-100 text-green-800': selectedTask.priority === 'low',
-              }"
-            >
-              {{ selectedTask.priority.toUpperCase() }}
-            </span>
-          </div>
-        </div>
-
-        <!-- Image -->
         <div
-          v-if="selectedTask.image_url"
-          class="w-full h-24 md:h-[30vh] rounded-lg overflow-hidden bg-gray-100 flex-shrink-0"
+          class="flex justify-between items-center mb-3 md:mb-4 pb-2 md:pb-3 border-b border-gray-100 flex-shrink-0"
         >
-          <img
-            :src="selectedTask.image_url"
-            @error="onImageError"
-            class="w-full h-full object-cover"
-          />
-        </div>
-
-        <!-- Description -->
-        <div v-if="selectedTask.description" class="flex-shrink-0">
-          <h3
-            class="font-semibold text-sm md:text-base text-gray-700 mb-2 flex items-center gap-1"
+          <button
+            @click="selectedTask = null"
+            class="px-2 md:px-3 py-1.5 bg-gray-200 text-xs md:text-sm rounded hover:bg-gray-300 transition flex items-center gap-1"
           >
-            Description
-          </h3>
-          <div
-            class="text-base md:text-lg text-gray-600 leading-tight line-clamp-3 bg-gray-50 p-2 md:p-3 rounded-lg border"
-          >
-            {{ selectedTask.description }}
-          </div>
-        </div>
-
-        <!-- Details Grid -->
-        <div
-          class="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-3 flex-shrink-0"
-        >
-          <!-- Due Date -->
-          <div v-if="selectedTask.due_date" class="space-y-1">
-            <span class="text-xs text-gray-500 font-medium block">
-              Due Date</span
+            ← Back
+          </button>
+          <div class="flex gap-1">
+            <button
+              @click="openEditModal(selectedTask)"
+              class="px-2 md:px-3 py-1.5 bg-blue-500 text-white text-xs rounded hover:bg-blue-600 transition flex items-center gap-1"
             >
-            <span class="font-bold text-base md:text-lg text-blue-600">
-              {{ formatDate(selectedTask.due_date) }}
-            </span>
-          </div>
-
-          <!-- Status -->
-          <div class="space-y-1">
-            <span class="text-xs text-gray-500 font-medium block"
-              >✅ Status</span
+              ✏️ Edit
+            </button>
+            <button
+              @click="confirmDelete(selectedTask.id)"
+              class="px-2 md:px-3 py-1.5 bg-red-500 text-white text-xs rounded hover:bg-red-600 transition flex items-center gap-1"
             >
-            <span
-              :class="
-                selectedTask.completed
-                  ? 'text-green-600 font-bold text-base md:text-lg'
-                  : 'text-gray-500 font-medium'
-              "
-            >
-              {{ selectedTask.completed ? "COMPLETED" : "PENDING" }}
-            </span>
-          </div>
-
-          <!-- Created Date -->
-          <div class="space-y-1 col-span-1 md:col-span-2">
-            <span class="text-xs text-gray-500 font-medium block">
-              Created</span
-            >
-            <span class="text-xs md:text-sm text-gray-600 font-medium">
-              {{ formatDate(selectedTask.created_at) }}
-            </span>
+              🗑️ Delete
+            </button>
           </div>
         </div>
 
-        <!-- Completion Toggle -->
-        <div class="flex-shrink-0 pt-2">
-          <label
-            class="flex items-center gap-2 md:gap-3 p-2 md:p-3 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border-2 border-green-100 cursor-pointer hover:shadow-md transition-all w-full"
-          >
-            <input
-              type="checkbox"
-              :checked="selectedTask.completed"
-              @change="toggleCompletion(selectedTask)"
-              class="w-5 h-5 md:w-6 md:h-6 rounded-lg border-2 border-gray-400 appearance-none checked:bg-white checked:border-green-600 checked:before:content-['✔'] checked:before:text-white checked:before:absolute checked:before:top-1/2 checked:before:left-1/2 checked:before:-translate-x-1/2 checked:before:-translate-y-1/2 relative"
-            />
-            <div>
-              <span class="font-bold text-sm md:text-lg text-green-800 block">
-                {{ selectedTask.completed ? "Completed" : "Pending" }}
+        <!-- Content -->
+        <div class="flex-1 p-2 md:p-3 space-y-2 md:space-y-3 overflow-y-auto">
+          <div class="flex-shrink-0">
+            <h2
+              class="text-xl md:text-2xl font-black text-gray-900 mb-1 truncate"
+            >
+              {{ selectedTask.title }}
+            </h2>
+            <div class="flex flex-wrap items-center gap-1 md:gap-2 mb-2">
+              <span
+                class="px-2 md:px-3 py-1 bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800 rounded-full text-xs font-bold"
+              >
+                {{ getCategoryName(selectedTask.category_id) || "N/A" }}
+              </span>
+              <span
+                v-if="selectedTask.priority"
+                class="px-2 py-1 text-xs font-bold rounded-full"
+                :class="{
+                  'bg-red-100 text-red-800': selectedTask.priority === 'high',
+                  'bg-yellow-100 text-yellow-800':
+                    selectedTask.priority === 'medium',
+                  'bg-green-100 text-green-800':
+                    selectedTask.priority === 'low',
+                }"
+              >
+                {{ selectedTask.priority.toUpperCase() }}
               </span>
             </div>
-          </label>
+          </div>
+
+          <!-- Image -->
+          <div
+            v-if="selectedTask.image_url"
+            class="w-full h-24 max-[440px]:h-40 md:h-[30vh] rounded-lg overflow-hidden bg-gray-100 flex-shrink-0"
+          >
+            <img
+              :src="selectedTask.image_url"
+              @error="onImageError"
+              class="w-full h-full object-cover"
+            />
+          </div>
+
+          <!-- Description -->
+          <div v-if="selectedTask.description" class="flex-shrink-0">
+            <h3
+              class="font-semibold text-xs md:text-sm text-gray-700 mb-2 flex items-center gap-1"
+            >
+              Description
+            </h3>
+            <div
+              class="text-sm md:text-base text-gray-600 leading-tight line-clamp-3 bg-gray-50 p-2 md:p-3 rounded-lg border"
+            >
+              {{ selectedTask.description }}
+            </div>
+          </div>
+
+          <!-- Details Grid -->
+          <div
+            class="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-3 flex-shrink-0"
+          >
+            <!-- Due Date -->
+            <div v-if="selectedTask.due_date" class="space-y-1">
+              <span class="text-xs text-gray-500 font-medium block">
+                Due Date</span
+              >
+              <span class="font-bold text-base md:text-lg text-blue-600">
+                {{ formatDate(selectedTask.due_date) }}
+              </span>
+            </div>
+
+            <!-- Status -->
+            <div class="space-y-1">
+              <span class="text-xs text-gray-500 font-medium block"
+                >✅ Status</span
+              >
+              <span
+                :class="
+                  selectedTask.completed
+                    ? 'text-green-600 font-bold text-base md:text-lg'
+                    : 'text-gray-500 font-medium'
+                "
+              >
+                {{ selectedTask.completed ? "COMPLETED" : "PENDING" }}
+              </span>
+            </div>
+
+            <!-- Created Date -->
+            <div class="space-y-1 col-span-1 md:col-span-2">
+              <span class="text-xs text-gray-500 font-medium block">
+                Created</span
+              >
+              <span class="text-xs md:text-sm text-gray-600 font-medium">
+                {{ formatDate(selectedTask.created_at) }}
+              </span>
+            </div>
+          </div>
+
+          <!-- Completion Toggle -->
+          <div class="flex-shrink-0 pt-2">
+            <label
+              class="flex items-center gap-2 md:gap-3 p-2 md:p-3 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border-2 border-green-100 cursor-pointer hover:shadow-md transition-all w-full"
+            >
+              <input
+                type="checkbox"
+                :checked="selectedTask.completed"
+                @change="toggleCompletion(selectedTask)"
+                class="w-5 h-5 md:w-6 md:h-6 rounded-lg border-2 border-gray-400 appearance-none checked:bg-white checked:border-green-600 checked:before:content-['✔'] checked:before:text-white checked:before:absolute checked:before:top-1/2 checked:before:left-1/2 checked:before:-translate-x-1/2 checked:before:-translate-y-1/2 relative"
+              />
+              <div>
+                <span class="font-bold text-sm md:text-lg text-green-800 block">
+                  {{ selectedTask.completed ? "Completed" : "Pending" }}
+                </span>
+              </div>
+            </label>
+          </div>
         </div>
       </div>
-    </div>
+    </Transition>
 
     <!-- Edit Modal -->
     <div
@@ -398,11 +408,12 @@
 </template>
 
 <script setup>
-import { inject, ref } from "vue";
+import { ref } from "vue";
 import axios from "axios";
 
 import { useTasksStore } from "../stored-data/index";
 import { computed } from "vue";
+import { watch } from "vue";
 
 const taskStore = useTasksStore();
 
@@ -443,6 +454,18 @@ const formatDate = (dateString) => {
     return "N/A";
   }
 };
+
+const filterKey = computed(() => {
+  return `${taskStore.filter.type}-${taskStore.filter.id || "all"}`;
+});
+
+watch(
+  () => taskStore.filter,
+  () => {
+    selectedTask.value = null;
+  },
+  { deep: true }
+);
 
 async function toggleCompletion(task) {
   const newStatus = !task.completed;
@@ -555,12 +578,21 @@ const loadData = async () => {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
-/* .line-clamp-2 {
-  -webkit-line-clamp: 2;
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease, transform 0.3s ease;
 }
-.line-clamp-3 {
-  -webkit-line-clamp: 3;
-} */
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+  transform: translateY(10px);
+}
+.fade-enter-to,
+.fade-leave-from {
+  opacity: 1;
+  transform: translateY(0);
+}
 
 .task-card {
   max-width: 100%;

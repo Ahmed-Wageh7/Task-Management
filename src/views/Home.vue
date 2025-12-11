@@ -7,13 +7,12 @@
     <div class="flex-1 flex flex-col">
       <Navbar @task-added="addTaskFirst" />
 
-      <main class="flex-1 p-6 bg-gray-50 overflow-auto">
+      <main class="flex-1 p-6 bg-gray-50 overflow-auto max-[500px]:px-0">
         <TaskList />
       </main>
     </div>
   </div>
 </template>
-
 <script setup>
 import Navbar from "../components/navbar.vue";
 import Sidebar from "../components/sidebar.vue";
