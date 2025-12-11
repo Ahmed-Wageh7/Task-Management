@@ -244,15 +244,21 @@
           <!-- Completion Toggle -->
           <div class="flex-shrink-0 pt-2">
             <label
-              class="flex items-center gap-2 md:gap-3 p-2 md:p-3 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border-2 border-green-100 cursor-pointer hover:shadow-md transition-all w-full"
+              class="relative flex items-center gap-2 md:gap-3 p-2 md:p-3 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border-2 border-green-100 cursor-pointer hover:shadow-md transition-all w-full"
             >
               <input
                 type="checkbox"
                 :checked="selectedTask.completed"
                 @change="toggleCompletion(selectedTask)"
-                class="w-5 h-5 md:w-6 md:h-6 rounded-lg border-2 border-gray-400 appearance-none checked:bg-white checked:border-green-600 checked:before:content-['✔'] checked:before:text-white checked:before:absolute checked:before:top-1/2 checked:before:left-1/2 checked:before:-translate-x-1/2 checked:before:-translate-y-1/2 relative"
+                class="w-5 h-5 md:w-6 md:h-6 rounded-lg border-2 border-gray-400 appearance-none checked:bg-green-600 relative"
               />
-              <div>
+              <span
+                v-if="selectedTask.completed"
+                class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 md:w-6 md:h-6 flex items-center justify-center text-white text-sm md:text-base pointer-events-none"
+              >
+                ✔
+              </span>
+              <div class="">
                 <span class="font-bold text-sm md:text-lg text-green-800 block">
                   {{ selectedTask.completed ? "Completed" : "Pending" }}
                 </span>
